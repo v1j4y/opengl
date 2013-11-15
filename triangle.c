@@ -39,9 +39,9 @@ int init_resources()
     "#version 120\n"  // OpenGL 2.1
 #endif
     "void main(void) {        "
-    "  gl_FragColor[0] = 0.0; "
-    "  gl_FragColor[1] = 0.0; "
-    "  gl_FragColor[2] = 1.0; "
+    "  gl_FragColor[0] = gl_FragCoord.x/480.0; "
+    "  gl_FragColor[1] = gl_FragColor.y/480.0; "
+    "  gl_FragColor[2] = gl_FragColor.x/480.0; "
     "}";
     glShaderSource(fs, 1, &fs_source, NULL);
     glCompileShader(fs);
@@ -80,9 +80,9 @@ void onDisplay()
     glUseProgram(program);
     glEnableVertexAttribArray(attribute_coord2d);
     GLfloat triangle_vertices[] = {
-        0.0, 0.8,
-       -0.8,-0.8,
-        0.8,-0.8,
+        0.0,  0.8,
+       -0.8, -0.8,
+        0.8, -0.8,
     };
 
   glVertexAttribPointer(
