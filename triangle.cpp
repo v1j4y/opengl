@@ -6,9 +6,9 @@
 #include <GL/glut.h>
 #include "shader_utils.h"
 
-GLuint vbo_triangle;
+GLuint vbo_triangle, vbo_triangle_colors;
 GLuint program;
-GLint attribute_coord2d;
+GLint attribute_coord2d, attribute_v_color;
 
 int init_resources()
 {
@@ -20,7 +20,16 @@ int init_resources()
     glGenBuffers(1, &vbo_triangle);
     glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
     glBufferData(GL_ARRAY_BUFFER, sizeof(triangle_vertices), triangle_vertices, GL_STATIC_DRAW);
-//GLint compile_ok = GL_FALSE, link_ok = GL_FALSE;
+
+    GLfloat triangle_colors[] = {
+        1.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+        1.0, 0.0, 0.0,
+    };
+    glGenBuffers(1, &vbo_triangle_colors);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle_colors);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(triangle_colors), triangle_colors, GL_STATIC_DRAW);
+
   GLint link_ok = GL_FALSE;
 
   GLuint vs, fs;
@@ -45,6 +54,13 @@ int init_resources()
     return 0;
   }
 
+  attribute_name = "v_color";
+  attribute_v_color = glGetAttribLocation(program, attribute_name);
+  if (attribute_v_color == -1) {
+    fprintf(stderr, "Could not bind attribute %s\n", attribute_name);
+    return 0;
+  }
+
 
     return 1;
 
@@ -63,6 +79,19 @@ void onDisplay()
   glVertexAttribPointer(
     attribute_coord2d,
     2,
+    GL_FLOAT,
+    GL_FALSE,
+    0,
+    0
+  );
+
+  glEnableVertexAttribArray(attribute_v_color);
+
+  glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle_colors);
+
+  glVertexAttribPointer(
+    attribute_v_color,
+    3,
     GL_FLOAT,
     GL_FALSE,
     0,
