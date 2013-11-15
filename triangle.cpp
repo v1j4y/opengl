@@ -6,9 +6,13 @@
 #include <GL/glut.h>
 #include "shader_utils.h"
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 GLuint vbo_triangle, vbo_triangle_colors;
 GLuint program;
 GLint attribute_coord2d, attribute_v_color;
+GLint uniform_fade;
 
 struct attributes {
     GLfloat coord2d[2];
@@ -58,15 +62,33 @@ int init_resources()
     return 0;
   }
 
+  const char* uniform_name;
+  uniform_name = "fade";
+  uniform_fade = glGetUniformLocation(program, uniform_name);
+  if(uniform_fade == -1) {
+      fprintf(stderr, "Could not bind uniform %s\n", uniform_name);
+      return 0;
+  }
+
 
     return 1;
 
 }
 
+void idle()
+{
+    float cur_fade = sinf(glutGet(GLUT_ELAPSED_TIME) / 1000.0 * (2*M_PI) / 5 ) / 2 + 0.5;
+    glUseProgram(program);
+    glUniform1f(uniform_fade, cur_fade);
+    glutPostRedisplay();
+}
+
+
 void onDisplay()
 {
   glClearColor(1.0, 1.0, 1.0, 1.0);
   glClear(GL_COLOR_BUFFER_BIT);
+//glUniformlf(uniform_fade, 0.1);
 
   glUseProgram(program);
   glEnableVertexAttribArray(attribute_coord2d);
@@ -105,7 +127,6 @@ void free_resources()
   glDeleteBuffers(1, &vbo_triangle);
 }
 
-
 int main(int argc, char* argv[]) {
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGBA|GLUT_ALPHA|GLUT_DOUBLE|GLUT_DEPTH);
@@ -125,6 +146,7 @@ int main(int argc, char* argv[]) {
 
   if (init_resources()) {
     glutDisplayFunc(onDisplay);
+    glutIdleFunc(idle);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glutMainLoop();
@@ -133,3 +155,4 @@ int main(int argc, char* argv[]) {
   free_resources();
   return EXIT_SUCCESS;
 }
+
