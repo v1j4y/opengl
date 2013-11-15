@@ -1,5 +1,4 @@
 opengl tutorial
 ===============
 
-* tut03
-* fading !
+* tut04
