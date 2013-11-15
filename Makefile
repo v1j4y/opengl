@@ -1,9 +1,10 @@
 #FCFLAGS= -lglut -lGL -lGLU -lgl2ps -lX11 -lm
 #LDLIBS= -lglut -lGL -lGLU -lgl2ps -lX11 -lm -lGLEW
 LDLIBS=-lglut -lGLEW -lGL
-CC=g++
+CXXFLAGS=-g3 -fno-inline -O0
+CC=g++ 
 all: triangle
-clear:
+clean:
 	rm *.o triangle
 triangle: shader_utils.o
-.PHONY: all clear
+.PHONY: all clean
