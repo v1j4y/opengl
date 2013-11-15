@@ -3,8 +3,8 @@
 LDLIBS=-lglut -lGLEW -lGL -lm
 CXXFLAGS=-g3 -fno-inline -O0
 CC=g++ 
-all: triangle
+all: cube
 clean:
-	rm *.o triangle
-triangle: shader_utils.o
+	rm *.o cube
+cube: shader_utils.o
 .PHONY: all clean
