@@ -10,16 +10,22 @@ GLuint vbo_triangle, vbo_triangle_colors;
 GLuint program;
 GLint attribute_coord2d, attribute_v_color;
 
+struct attributes {
+    GLfloat coord2d[2];
+    GLfloat v_color[3];
+};
+
 int init_resources()
 {
-    GLfloat triangle_vertices[] = {
-        0.0, 0.8,  1.0, 1.0, 0.0,
-       -0.8,-0.8,  0.0, 0.0, 1.0,
-        0.8,-0.8,  1.0, 0.0, 0.0,
+
+    struct attributes triangle_attributes[] = {
+        {{ 0.0, 0.8},  {1.0, 1.0, 0.0}},
+        {{-0.8,-0.8},  {0.0, 0.0, 1.0}},
+        {{ 0.8,-0.8},  {1.0, 0.0, 0.0}},
     };
     glGenBuffers(1, &vbo_triangle);
     glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(triangle_vertices), triangle_vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(triangle_attributes), triangle_attributes, GL_STATIC_DRAW);
 
   GLint link_ok = GL_FALSE;
 
@@ -73,7 +79,7 @@ void onDisplay()
     2,
     GL_FLOAT,
     GL_FALSE,
-    5 * sizeof(GLfloat),
+    sizeof(struct attributes),
     0
   );
   glVertexAttribPointer(
@@ -81,8 +87,8 @@ void onDisplay()
     3,
     GL_FLOAT,
     GL_FALSE,
-    5 * sizeof(GLfloat),
-    (GLvoid*) (2 * sizeof(GLfloat))
+    sizeof(struct attributes),
+    (GLvoid*) offsetof(struct attributes, v_color)
   );
 
   
